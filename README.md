@@ -31,7 +31,7 @@ Este proyecto pertenece a :
 
 3. Se ejecuta "run", donde [puertoHost] se reemplaza por un puerto a elecciony [tagName] por el nombre antes elegido
     ```bash
-    sudo docker run -d -p [puertoHost]:80 [tagName]
+    sudo docker run -d -p [puertoHost]:1515 [tagName]
     ```
 ## Deploy
 
