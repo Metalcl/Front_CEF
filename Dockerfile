@@ -20,7 +20,7 @@ RUN npm run build
 
 EXPOSE 1515
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "start" ]
 
 
 
