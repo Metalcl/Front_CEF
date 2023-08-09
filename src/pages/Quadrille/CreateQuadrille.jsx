@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Navigation from '../../components/Navigation';
 import { API_URL } from '../../apiConfig';
+import Swal from 'sweetalert2';
 
 const CreateQuadrille = () => {
     const seasons = JSON.parse(sessionStorage.getItem('seasons')) || [];
@@ -48,13 +49,31 @@ const CreateQuadrille = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!selectedNameQuadrille || !selectedBase) {
+            let errorMessage = '';
+            if (!selectedNameQuadrille) {
+                errorMessage += 'El campo nombre de la cuadrilla está vacío. ';
+            }
+            if (!selectedBase) {
+                errorMessage += ' Por favor, seleccione una base.';
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+            });
+            return;
+        }
+
         try {
             const response = await axios.post(
                 `${API_URL}/cuadrilla/crear`,
                 {
                     temporada_id: currentSeasonID,
                     base_id: selectedBase,
-                    nombre_cuadrilla: selectedNameQuadrille
+                    nombre_cuadrilla: selectedNameQuadrille,
                 },
                 {
                     headers: {
@@ -62,9 +81,22 @@ const CreateQuadrille = () => {
                     },
                 }
             );
-            console.log('Respuesta del servidor:', response.data);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'Cuadrilla creada exitosamente.',
+            });
+
+            setSelectedNameQuadrille('');
+            setSelectedBase('');
         } catch (error) {
             console.error('Error en la petición:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al crear la cuadrilla.',
+            });
         }
     };
 
@@ -73,43 +105,48 @@ const CreateQuadrille = () => {
             <Navigation />
             <h1>Crear una cuadrilla</h1>
             <br />
-            <form onSubmit={handleSubmit}>
-                <label>Nombre de la cuadrilla: </label>
-                <input
-                    type="text"
-                    placeholder="Ingrese nombre para la cuadrilla"
-                    onChange={(e) => setSelectedNameQuadrille(e.target.value)}
-                    value={selectedNameQuadrille}
-                />
-                <br />
 
-                <label>
-                    A día de hoy ({currentDay < 10 ? `0${currentDay}` : currentDay} /
-                    {currentMonth < 10 ? `0${currentMonth}` : currentMonth}), la temporada corresponde a:
-                </label>
-                <input
-                    type="text"
-                    placeholder={`Temporada ${currentSeason}`}
-                    disabled
-                />
-                <br />
+            {bases.length === 0 ? (
+                <p>Aún no se pueden crear cuadrillas, ya que no existen bases registradas.</p>
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    <label>Nombre de la cuadrilla: </label>
+                    <input
+                        type="text"
+                        placeholder="Ingrese nombre para la cuadrilla"
+                        onChange={(e) => setSelectedNameQuadrille(e.target.value)}
+                        value={selectedNameQuadrille}
+                    />
+                    <br />
 
-                <label>Seleccione una base: </label>
-                <select
-                    onChange={(e) => setSelectedBase(e.target.value)}
-                    value={selectedBase}
-                >
-                    <option></option>
-                    {bases.map(({ nombre, _id }) => (
-                        <option key={_id} value={_id}>
-                            {nombre}
-                        </option>
-                    ))}
-                </select>
-                <br />
+                    <label>
+                        A día de hoy ({currentDay < 10 ? `0${currentDay}` : currentDay} /
+                        {currentMonth < 10 ? `0${currentMonth}` : currentMonth}), la temporada corresponde a:
+                    </label>
+                    <input
+                        type="text"
+                        placeholder={`Temporada ${currentSeason}`}
+                        disabled
+                    />
+                    <br />
 
-                <button type="submit">Crear cuadrilla</button>
-            </form>
+                    <label>Seleccione una base: </label>
+                    <select
+                        onChange={(e) => setSelectedBase(e.target.value)}
+                        value={selectedBase}
+                    >
+                        <option></option>
+                        {bases.map(({ nombre, _id }) => (
+                            <option key={_id} value={_id}>
+                                {nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <br />
+
+                    <button type="submit">Crear cuadrilla</button>
+                </form>
+            )}
         </div>
     );
 };

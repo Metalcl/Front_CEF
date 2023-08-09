@@ -60,27 +60,33 @@ const MonthlyAttendance = () => {
             <Navigation />
             <h1>Ver Asistencias Mensuales</h1>
             <br />
-            <button onClick={handleDownloadCSV}>Descargar tabla</button>
-            <br />
             {isLoading ? (
                 <CircularProgress />
             ) : (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rut</th>
-                            <th>Cantidad de días trabajados</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {monthlyAttendanceData.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.user}</td>
-                                <td>{item.count}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <>
+                    <button onClick={handleDownloadCSV}>Descargar tabla</button>
+                    <br />
+                    {monthlyAttendanceData.length === 0 ? (
+                        <p>Aún no hay asistencias marcadas y confirmadas.</p>
+                    ) : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rut</th>
+                                    <th>Cantidad de días trabajados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {monthlyAttendanceData.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.user}</td>
+                                        <td>{item.count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </>
             )}
         </div>
     );

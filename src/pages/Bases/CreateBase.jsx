@@ -1,15 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { UserDataContext } from '../../context/UserDataContext';
 import Navigation from '../../components/Navigation';
 import { API_URL } from '../../apiConfig';
 import Swal from 'sweetalert2';
 
 const CreateBase = () => {
-    const { userData } = useContext(UserDataContext);
+
+
     const [nameBase, setNameBase] = useState('');
     const tokenlocal = localStorage.getItem('userToken');
     const [loading, setLoading] = useState(false);
+    const token = sessionStorage.getItem('token');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +44,7 @@ const CreateBase = () => {
                 title: 'Éxito',
                 text: 'Base creada exitosamente.',
             });
-
+            DataBases();
             setNameBase('');
             setLoading(false);
         } catch (error) {
@@ -54,6 +55,22 @@ const CreateBase = () => {
                 title: 'Error',
                 text: 'Hubo un error al crear la base.',
             });
+        }
+    };
+
+    const DataBases = async () => {
+        try {
+            const responseBases = await axios.get(
+                `${API_URL}/base/obtener`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+            );
+            const { Bases } = responseBases.data;
+            sessionStorage.setItem('bases', JSON.stringify(Bases));
+        } catch (error) {
+            console.error('Error en la petición de las bases:', error);
         }
     };
 
