@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navigation from '../../components/Navigation';
 import { API_URL } from '../../apiConfig';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const MonthlyAttendance = () => {
     const token = sessionStorage.getItem('token');
     const [monthlyAttendanceData, setMonthlyAttendanceData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const getCurrentDate = () => {
         const currentDate = new Date();
@@ -30,6 +32,8 @@ const MonthlyAttendance = () => {
                 setMonthlyAttendanceData(response.data.data);
             } catch (error) {
                 console.error('Error en la petición:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -58,22 +62,26 @@ const MonthlyAttendance = () => {
             <br />
             <button onClick={handleDownloadCSV}>Descargar tabla</button>
             <br />
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rut</th>
-                        <th>Cantidad de días trabajados</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {monthlyAttendanceData.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.user}</td>
-                            <td>{item.count}</td>
+            {isLoading ? (
+                <CircularProgress />
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rut</th>
+                            <th>Cantidad de días trabajados</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {monthlyAttendanceData.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.user}</td>
+                                <td>{item.count}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };
