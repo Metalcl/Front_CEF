@@ -1,16 +1,30 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserDataContext } from '../../context/UserDataContext';
 import Navigation from '../../components/Navigation';
 import { API_URL } from '../../apiConfig';
+import Swal from 'sweetalert2';
 
 const CreateBase = () => {
     const { userData } = useContext(UserDataContext);
-    const { token } = userData;
     const [nameBase, setNameBase] = useState('');
     const tokenlocal = localStorage.getItem('userToken');
+    const [loading, setLoading] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (nameBase === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El campo nombre base se encuentra vacío.',
+            });
+            return;
+        }
+
+        setLoading(true);
+
         try {
             const response = await axios.post(
                 `${API_URL}/base/crear`,
@@ -23,9 +37,23 @@ const CreateBase = () => {
                     },
                 }
             );
-            console.log('Respuesta del servidor:', response.data);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'Base creada exitosamente.',
+            });
+
+            setNameBase('');
+            setLoading(false);
         } catch (error) {
             console.error('Error en la petición:', error);
+            setLoading(false);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al crear la base.',
+            });
         }
     };
 
@@ -44,10 +72,12 @@ const CreateBase = () => {
                     value={nameBase}
                 />
                 <br />
-                <button type="submit">Enviar</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Cargando...' : 'Enviar'}
+                </button>
             </form>
         </div>
     )
 }
 
-export default CreateBase
+export default CreateBase;
