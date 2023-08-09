@@ -1,0 +1,22 @@
+.container-menu{
+    width: 100%;
+}
+.menu{
+    display: flex;
+    list-style: none;
+    margin: 0;
+}
+.item-menu{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+    align-items: center;
+}
+.anchor-menu{
+    text-decoration: none;
+    color: #fff;
+}
+.anchor-menu:hover{
+    color: gray;
+}
+

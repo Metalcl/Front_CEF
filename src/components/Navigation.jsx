@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserDataContext } from '../context/UserDataContext';
+import "../styles/navigation.css"
 
 const Navigation = () => {
     const { logout } = useContext(UserDataContext);
@@ -12,26 +13,26 @@ const Navigation = () => {
     const cargo = sessionStorage.getItem('cargo');
 
     return (
-        <nav>
-            <ul>
-                <li>
-                    <Link to="/home">Home</Link>
+        <nav className='container-menu'>
+            <ul className='menu'>
+                <li className='item-menu'>
+                    <Link className='anchor-menu' to="/home">Home</Link>
                 </li>
 
                 {/* Para usuarios administradores */}
                 {userType === 'admin' && (
                     <>
-                        <li>
-                            <Link to="/ver-asistencias-mensuales">Asistencias Mensuales</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/ver-asistencias-mensuales">Asistencias Mensuales</Link>
                         </li>
-                        <li>
-                            <Link to="/crear-base">Crear Base</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/crear-base">Crear Base</Link>
                         </li>
-                        <li>
-                            <Link to="/crear-cuadrilla">Crear Cuadrilla</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/crear-cuadrilla">Crear Cuadrilla</Link>
                         </li>
-                        <li>
-                            <Link to="/crear-ficha">Crear Ficha</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/crear-ficha">Crear Ficha</Link>
                         </li>
                     </>
                 )}
@@ -39,11 +40,11 @@ const Navigation = () => {
                 {/* Para usuarios tipo brigadista */}
                 {userType === 'brigadista' && (
                     <>
-                        <li>
-                            <Link to="/marcar-asistencia">Marcar asistencia</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/marcar-asistencia">Marcar asistencia</Link>
                         </li>
-                        <li>
-                            <Link to="/ver-horario">Ver horario</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/ver-horario">Ver horario</Link>
                         </li>
                     </>
                 )}
@@ -51,13 +52,13 @@ const Navigation = () => {
                 {/* Para usuarios tipo JefeCuadrilla */}
                 {cargo === 'JefeCuadrilla' && (
                     <>
-                        <li>
-                            <Link to="/aceptar-asistencias">Aceptar asistencias</Link>
+                        <li className='item-menu'>
+                            <Link className='anchor-menu' to="/aceptar-asistencias">Aceptar asistencias</Link>
                         </li>
                     </>
                 )}
 
-                <li>
+                <li className='item-menu'>
                     <button onClick={handleLogout}>Cerrar sesión</button>
                 </li>
             </ul>
